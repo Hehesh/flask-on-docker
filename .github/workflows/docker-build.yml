@@ -27,16 +27,20 @@ jobs:
 
       - name: Wait for Flask and test response
         run: |
-          for i in $(seq 1 60); do
+          for i in $(seq 1 30); do
+            echo "Attempt $i/30..."
+
             if curl --fail --silent http://127.0.0.1:1131/ \
-                | grep -q '"hello":"world"'; then
+                | python3 -c 'import sys,json; assert json.load(sys.stdin)["hello"] == "world"'; then
               echo "Flask endpoint test passed."
               exit 0
             fi
+
             sleep 2
           done
 
           echo "Flask did not return the expected response."
+          docker compose ps
           docker compose logs
           exit 1
 
