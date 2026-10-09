@@ -1,0 +1,32 @@
+# Credentials and local environment configuration
+.env
+.env.*
+!.env.dev.example
+!.env.prod.example
+!.env.prod.db.example
+
+# Python environments and installations
+.venv/
+venv/
+local_python/
+Python-3.11.17/
+Python-3.11.17.tgz
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Local test files
+media-test.txt
+production-test.txt
+
+# Uploaded media (keep directory placeholders)
+services/web/project/media/*
+!services/web/project/media/.gitkeep
+
+# Editor and OS artifacts
+.DS_Store
+*.swp
+*.swo

@@ -1,0 +1,3 @@
+project/media/*
+cat >> services/web/.dockerignore <<'EOF'
+project/media/*

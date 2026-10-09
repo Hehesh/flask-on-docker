@@ -1,0 +1,49 @@
+name: Docker Development Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure development environment
+        run: cp .env.dev.example .env.dev
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Start services
+        run: docker compose up -d
+
+      - name: Check running containers
+        run: docker compose ps
+
+      - name: Wait for Flask and test response
+        run: |
+          for i in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:1131/ \
+                | grep -q '"hello":"world"'; then
+              echo "Flask endpoint test passed."
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Flask did not return the expected response."
+          docker compose logs
+          exit 1
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Clean up containers
+        if: always()
+        run: docker compose down -v
